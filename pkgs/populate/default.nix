@@ -139,7 +139,7 @@ let
         "$source_path" \
         ${quote (
           optionalString (!isLocalTarget target)
-                         "${target.user}@${target.host}:" +
+                         "${optionalString (target.user != null) "${target.user}@"}${target.host}:" +
           target.path
         )} \
       >&2
@@ -152,13 +152,12 @@ let
         ${ssh' target} ${quote target.host} ${quote script}
       '';
 
-  ssh' = target: concatMapStringsSep " " quote [
+  ssh' = target: concatMapStringsSep " " quote ([
     "${openssh}/bin/ssh"
-    "-l" target.user
     "-o" "ControlPersist=no"
-    "-p" target.port
     "-T"
-  ];
+  ] ++ optionals (target.user != null) [ "-l" target.user ]
+    ++ optionals (target.port != null) [ "-p" target.port ]);
 
 in
 

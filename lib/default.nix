@@ -47,9 +47,9 @@ let {
       parse = lib.match "(([^@]+)@)?(([^:/]+))?(:([^/]+))?(/.*)?" s;
       elemAt' = xs: i: if lib.length xs > i then lib.elemAt xs i else null;
     in {
-      user = default (lib.getEnv "LOGNAME") (elemAt' parse 1);
+      user = default null /*(lib.getEnv "LOGNAME")*/ (elemAt' parse 1);
       host = default (lib.maybeEnv "HOSTNAME" lib.getHostName) (elemAt' parse 3);
-      port = default "22" /* "ssh"? */ (elemAt' parse 5);
+      port = default null /*"22"*/ /* "ssh"? */ (elemAt' parse 5);
       path = default "/var/src" /* no default? */ (elemAt' parse 6);
     };
 
