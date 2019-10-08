@@ -9,9 +9,9 @@ in
       filename = "${openssh}/bin/ssh";
       argv = [
         filename
-        "-l" target.user
-        "-p" target.port
-        "-t"
+      ] ++ lib.optionals (target.user != null) [ "-l" target.user ]
+        ++ lib.optionals (target.port != null) [ "-p" target.port ]
+      ++ [ "-t"
         target.host
         (lib.concatStringsSep " " [
           "nix build"
@@ -27,8 +27,9 @@ in
       filename = "${openssh}/bin/ssh";
       argv = [
         filename
-        "-l" target.user
-        "-p" target.port
+      ] ++ lib.optionals (target.user != null) [ "-l" target.user ]
+        ++ lib.optionals (target.port != null) [ "-p" target.port ]
+      ++ [ "-t"
         target.host
         "nixos-rebuild -I ${lib.escapeShellArg target.path} ${
           lib.concatMapStringsSep " " lib.escapeShellArg args
