@@ -1,4 +1,4 @@
-{ overlays ? [], ... }@args:
+{ overlays ? [], nixpkgs ? <nixpkgs>, ... }@args:
 
 let
   nix-writers = builtins.fetchGit {
@@ -7,7 +7,7 @@ let
   };
 in
 
-import <nixpkgs> (args // {
+import nixpkgs ((builtins.removeAttrs args ["nixpkgs" "overlays"]) // {
   overlays = [
     (import ./overlay.nix)
     (import "${nix-writers}/pkgs")
